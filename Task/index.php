@@ -2,16 +2,13 @@
     session_start();
     global $id,$username;
     $user= $_POST['username'];
-    //$id  = $_POST['id'];    
+    //$id  = $_POST['id'];  
+    
+
 abstract class checkuser{
 
     abstract public function check($usertype);
 }
-
-
-
-
-
 
 
 class admin extends checkuser{
@@ -29,12 +26,17 @@ class admin extends checkuser{
             if ($result->num_rows != 0) {
                 $row = $result->fetch_assoc();
                 $id = $row['id'];
-            if ($id ==0 ) {
-                echo '<li><a href="controllpanle.php"><i class="fas fa-plus"></i>Add New User</a></li>';
-                     }
+                if ($id ==0 ) {
+                    echo '<li><a href="controllpanle.php"><i class="fas fa-plus"></i>Add New User</a></li>';
+                    echo '<li><a href="showid.php"><i class="fas fa-eye"></i>Show id</a></li>';
 
-}
-}}
+                
+                
+                }
+
+            }   
+    }       
+}  
 
 
 class user extends checkuser{
@@ -51,84 +53,71 @@ class user extends checkuser{
              if ($m->num_rows != 0) {
                  $row = $m->fetch_assoc();
                  $id = $row['id'];
-             if ($id !=0 ) {
-             echo '<li><a href="#"><i class="fas fa-home"></i>welcome  User</a></li>';
-          
-             }
- 
- }
- }}
+                if ($id !=0 ) {
+                echo '<li><a href="#"><i class="fas fa-home"></i>welcome  User</a></li>';
+            }
+            }
+       }
+}
 
-
-
-
-
-
-
-
-
-
-
- class loginuser{
+class loginuser{
     public $user;
 
     public function login($usertype){
-
-        global $user;
-        include('sqlconn.php');
-        $_SESSION["username"] = $user;
+    global $user;
+    include('sqlconn.php');
+    $_SESSION["username"] = $user;
         if($_SERVER['REQUEST_METHOD']=='POST'){
 
             if(empty($_POST['username'])){
                 header('location:login.php?Empty=plz fill username');
             }else{
-                        $this->user=$usertype;
-                        $password=$_POST['password'];
-                        $_SESSION["username"] = $user;
-                        $_SESSION["password"] = $password;
-                        //$_SESSION["id"]       =$id;  
-                    $result = $mysqli->query("SELECT id, username, password FROM user WHERE username = '$user' AND password = '$password' LIMIT 1");
-                    if ($result->num_rows != 0) {
-                        $row = $result->fetch_assoc();
-                        $id = $row['id'];
-                        $username = $row['username'];
-                        $password = $row['password'];
-        }
-         else{
-        header('location:login.php');
-
-        echo "<script>alert('invalid username or password, Try Again!')</script>";
-
-    
-}}}
-    else{header('location:login.php');}
-   }}
+                $this->user=$usertype;
+                $password=$_POST['password'];
+                $_SESSION["username"] = $user;
+                $_SESSION["password"] = $password;
+                //$_SESSION["id"]       =$id;  
+                $result = $mysqli->query("SELECT id, username, password FROM user WHERE username = '$user' AND password = '$password' LIMIT 1");
+                 if ($result->num_rows != 0) {
+                    $row = $result->fetch_assoc();
+                    $id = $row['id'];
+                    $username = $row['username'];
+                    $password = $row['password'];}
+                else{
+                    header('location:login.php');
+                    echo "<script>alert('invalid username or password, Try Again!')</script>";}
+                }
+       }else{header('location:login.php');}
+    }
+}
      
 
 
-   echo "<pre>";
+        echo "<pre>";
 
 
-$login=new loginuser();
-$login->login($user);
+        $login=new loginuser();
+        $login->login($user);
 
 
-//print_r($login);
-echo"</pre>";
+        //print_r($login);
+        echo"</pre>";
 
-echo "<pre>";
+        echo "<pre>";
 
-$admin=new admin();
-//$admin->check($id);
-//print_r($admin);
+        $admin=new admin();
+        //$admin->check($id);
+        //print_r($admin);
 
-echo"</pre>";
+        echo"</pre>";
 
-echo "<pre>";
-$user1=new user();
-//$user1->check($id);
-//print_r($user1);
-echo"</pre>";
+        echo "<pre>";
+        $user1=new user();
+        //$user1->check($id);
+        //print_r($user1);
+        echo"</pre>";
+
+      
 
 
 ?>
@@ -152,7 +141,9 @@ echo"</pre>";
         <?php  if (isset($_SESSION['username'])) {
                         $admin->check($id);
                        $user1->check($id);
+                      // $userid->getuser();
            }  ?>
+           
 
             <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i>Log Out</a></li>
 
